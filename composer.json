@@ -1,0 +1,24 @@
+{
+    "name": "enzoaccardo/ci4-adminkit-rbac",
+    "description": "RBAC (ruoli/permessi) per ci4-adminkit: implementa il contratto AdminKit\\Contracts\\Rbac (soft-discovery), servizio, model, migrazioni.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Vincenzo Accardo",
+            "email": "vincenzo.accardo@w3style.it"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "codeigniter4/framework": "^4.7",
+        "enzoaccardo/ci4-adminkit": "@dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdminKit\\Rbac\\": "src/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
