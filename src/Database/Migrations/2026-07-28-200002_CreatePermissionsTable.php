@@ -14,6 +14,7 @@ class CreatePermissionsTable extends Migration
             'name'        => ['type' => 'VARCHAR', 'constraint' => 150, 'null' => false],
             'slug'        => ['type' => 'VARCHAR', 'constraint' => 150, 'null' => false],
             'description' => ['type' => 'VARCHAR', 'constraint' => 255, 'null' => true, 'default' => null],
+            'created_at'  => ['type' => 'DATETIME', 'null' => true],
         ]);
         $this->forge->addPrimaryKey('id');
         $this->forge->addUniqueKey('slug');

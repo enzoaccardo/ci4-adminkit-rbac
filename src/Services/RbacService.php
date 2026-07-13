@@ -129,6 +129,13 @@ class RbacService implements RbacContract
         $this->clearCache();
     }
 
+    /** Invalida la cache dei permessi (compat: usata dopo modifiche al ruolo di un utente). */
+    public function flushUserCache(int $userId): void
+    {
+        unset($this->memo["role_id:{$userId}"]);
+        $this->clearCache();
+    }
+
     // -- Interni --------------------------------------------------------------
 
     protected function getPermissionsForRole(int $roleId): array
