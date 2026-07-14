@@ -2,15 +2,22 @@
 
 namespace AdminKit\Rbac\Models;
 
-use CodeIgniter\Model;
+use AdminKit\Models\BaseModel;
 
-class RolePermissionModel extends Model
+/**
+ * Pivot role↔permission: nessun ciclo di vita proprio. Audit/soft-delete
+ * disattivati (la tabella ha i campi audit dalla BaseMigration, non usati qui).
+ */
+class RolePermissionModel extends BaseModel
 {
-    protected $table          = 'role_permissions';
-    protected $primaryKey     = 'id';
-    protected $returnType     = 'object';
+    protected $table      = 'role_permissions';
+    protected $primaryKey = 'id';
+
     protected $useTimestamps  = false;
     protected $useSoftDeletes = false;
+    protected $beforeInsert   = [];
+    protected $beforeUpdate   = [];
+    protected $beforeDelete   = [];
 
     protected $allowedFields = ['role_id', 'permission_id'];
 

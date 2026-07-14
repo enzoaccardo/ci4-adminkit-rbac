@@ -2,15 +2,12 @@
 
 namespace AdminKit\Rbac\Models;
 
-use CodeIgniter\Model;
+use AdminKit\Models\BaseModel;
 
-class RoleModel extends Model
+class RoleModel extends BaseModel
 {
-    protected $table         = 'roles';
-    protected $primaryKey    = 'id';
-    protected $returnType    = 'object';
-    protected $useTimestamps = true;
-    protected $useSoftDeletes = false;
+    protected $table      = 'roles';
+    protected $primaryKey = 'id';
 
     protected $allowedFields = ['name', 'slug', 'level', 'description', 'is_active'];
 

@@ -2,15 +2,22 @@
 
 namespace AdminKit\Rbac\Models;
 
-use CodeIgniter\Model;
+use AdminKit\Models\BaseModel;
 
-class PermissionModel extends Model
+/**
+ * Permessi: dati statici (seeded). Audit/soft-delete disattivati (la tabella ha
+ * comunque i campi audit dalla BaseMigration, ma non hanno ciclo di vita qui).
+ */
+class PermissionModel extends BaseModel
 {
-    protected $table          = 'permissions';
-    protected $primaryKey     = 'id';
-    protected $returnType     = 'object';
+    protected $table      = 'permissions';
+    protected $primaryKey = 'id';
+
     protected $useTimestamps  = false;
     protected $useSoftDeletes = false;
+    protected $beforeInsert   = [];
+    protected $beforeUpdate   = [];
+    protected $beforeDelete   = [];
 
     protected $allowedFields = ['action', 'name', 'slug', 'description'];
 
