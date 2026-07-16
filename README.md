@@ -1,27 +1,39 @@
 # ci4-adminkit-rbac
 
-RBAC (ruoli / permessi) per **CodeIgniter 4**, spoke dell'ecosistema `ci4-adminkit`. Implementa il contratto `AdminKit\Contracts\Rbac`: **installarlo attiva il controllo permessi nel kit via soft-discovery** (il `BaseAdminController` delega `authorize()`/`can()` al `service('rbac')` se presente). Senza questo pacchetto, il kit resta fail-closed sulle azioni con permesso.
+Ruoli e permessi per ci4-adminkit.
 
-## Cosa contiene
-- **`service('rbac')`** (`RbacService`, auto-scoperto) — `isSuperAdmin()`, `can()`, `authorize()` (contratto) + API estesa (`userCan`, `roleCan`, `assignPermission`, `revokePermission`, `getPermissionsForCurrentUser`). Cache permessi su cache nativa CI4 (version-key), nessuna dipendenza da servizi dell'app.
-- **Model** `RoleModel` / `PermissionModel` (ruoli, permessi, join `role_permissions`).
-- **Migrazioni**: `roles`, `permissions`, `role_permissions`, + `role_id` su `users`.
-- **Trait** `HasRbac` (per controller non-kit, es. API: `can()`/`authorize()`).
-- **Config** `Rbac` (TTL cache, chiavi di sessione, tabella/colonna utenti).
-- **Eccezione** `ForbiddenException` (HTTP 403).
+Il kit definisce un contratto (`AdminKit\Contracts\Rbac`) ma nessuna
+implementazione. Questo pacchetto è l'implementazione: appena è installato,
+`authorize()` e `can()` nei controller del pannello iniziano a rispondere sul
+serio, senza altro da configurare. Se lo rimuovi, il kit torna a bloccare per
+sicurezza le azioni che richiedono un permesso.
 
-## Installazione (dev, path repository)
-```jsonc
-"repositories": [
-  { "type": "path", "url": "../ci4-adminkit" },
-  { "type": "path", "url": "../ci4-adminkit-rbac" }
-]
+## Come funziona
+
+Tre tabelle: `roles`, `permissions` e la pivot `role_permissions`. Ogni utente
+ha un `role_id`; chi è superadmin salta i controlli. I permessi di un ruolo
+vengono tenuti in cache e la cache si invalida quando cambi le assegnazioni.
+
+I permessi in sé sono roba dell'applicazione, non del pacchetto: qui c'è lo
+schema, i ruoli e i permessi li carichi tu con un seeder in base ai moduli che
+hai (`utenti.modifica`, `report.esporta`, quello che ti serve).
+
+## Installazione
+
 ```
-```bash
-composer require enzoaccardo/ci4-adminkit-rbac:@dev
-php spark migrate --all     # roles/permissions/role_permissions + role_id su users
+composer require enzoaccardo/ci4-adminkit-rbac
+php spark migrate --all
 ```
-Richiede una tabella `users` con `id` e (per il superadmin) una colonna/sessione `is_superadmin`. I **permessi e ruoli sono dati dell'app**: seedali tu (il pacchetto porta lo schema, non i dati).
 
-## Contratto / sessione
-`RbacService` legge lo stato utente dalla sessione: `user_id`, `role_id`, `is_superadmin` (nomi configurabili in `Config\Rbac`). Un superadmin bypassa i controlli. I controller admin del kit ottengono `authorize()`/`can()` automaticamente (soft-discovery); i controller non-kit possono usare il trait `HasRbac`.
+Le migrazioni creano le tre tabelle e aggiungono `role_id` a `users`.
+
+## Uso
+
+Nei controller del pannello scrivi direttamente `$this->authorize('utenti.modifica')`
+oppure `$this->can('utenti.elimina')`: il kit inoltra al servizio. Fuori dal
+pannello, per esempio in un controller di API, c'è il trait `HasRbac` con gli
+stessi due metodi.
+
+## Licenza
+
+MIT. Vedi [LICENSE](LICENSE).
